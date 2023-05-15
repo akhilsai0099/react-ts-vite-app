@@ -107,7 +107,8 @@ const DepartmentList: React.FC = () => {
     };
 
     return (
-        <TreeView defaultCollapseIcon={<ExpandLess />} defaultExpandIcon={<ExpandMore />}>
+        <TreeView defaultCollapseIcon={<ExpandLess />} defaultExpandIcon={<ExpandMore />}
+            sx={{ height: 240, flexGrow: 1, maxWidth: 450, overflowY: 'auto', overflowX: 'hidden' }}>
             {departmentData.map((department) => renderDepartment(department))}
         </TreeView>
     );

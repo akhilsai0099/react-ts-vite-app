@@ -19,7 +19,7 @@ const Page2 = () => {
 
                 <Divider />
 
-                <div style={{ margin: '10px' }}>
+                <div style={{ margin: '10px', display: 'flex', justifyContent: 'center' }}>
                     <DepartmentList />
                 </div>
             </div>
