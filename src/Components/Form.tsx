@@ -6,7 +6,9 @@ import Snackbar from '@mui/material/Snackbar';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent } from 'react';
+import { isValidEmail, isValidMobileNumber } from '../helper/validations'
 import './Form.css'
+
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
@@ -29,6 +31,8 @@ const Form: React.FC = () => {
         email: '',
         mobile: '',
     });
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isMobileNumberValid, setIsMobileNumberValid] = useState(true);
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const navigate = useNavigate();
@@ -40,6 +44,12 @@ const Form: React.FC = () => {
             ...prevFormData,
             [name]: value,
         }));
+        if (name === 'email') {
+            setIsEmailValid(value === "" || isValidEmail(value));
+        }
+        else if (name === 'mobile') {
+            setIsMobileNumberValid(value === "" || isValidMobileNumber(value));
+        }
     };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -78,7 +88,7 @@ const Form: React.FC = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        size='small'
+                        size='medium'
                         margin="normal"
                     />
                     <TextField
@@ -87,8 +97,10 @@ const Form: React.FC = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        size='small'
+                        size='medium'
                         margin="normal"
+                        error={!isEmailValid}
+                        helperText={!isEmailValid && "Invalid email"}
                     />
                     <TextField
                         label="Mobile Number"
@@ -96,10 +108,12 @@ const Form: React.FC = () => {
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleInputChange}
-                        size='small'
+                        size='medium'
                         margin="normal"
+                        error={!isMobileNumberValid}
+                        helperText={!isMobileNumberValid && "Invalid mobile number"}
                     />
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button type="submit" variant="contained" color="primary" disabled={!isMobileNumberValid || !isEmailValid}>
                         Submit
                     </Button>
                 </Box>
