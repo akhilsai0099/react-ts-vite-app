@@ -1,73 +1,116 @@
-import * as React from 'react';
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
+import React, { useState } from 'react';
+import { TreeView, TreeItem } from '@mui/lab';
 import { Checkbox } from '@mui/material';
 
-export default function DepartmentList() {
-    const [open, setOpen] = React.useState([true, false]);
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ExpandLess from '@mui/icons-material/ExpandLess';
 
-    const handleClick = () => {
-        setOpen([false, true]);
+interface Department {
+    department: string;
+    sub_departments: string[];
+}
+
+const departmentData: Department[] = [
+    {
+        department: 'customer_service',
+        sub_departments: ['support', 'customer_success'],
+    },
+    {
+        department: 'design',
+        sub_departments: ['graphic_design', 'product_design', 'web_design'],
+    },
+];
+
+const DepartmentList: React.FC = () => {
+    const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+
+    const handleDepartmentSelect = (event: React.ChangeEvent<HTMLInputElement>, department: string, subDepartments: string[]) => {
+        event.stopPropagation();
+
+        const isDepartmentSelected = selectedDepartments.includes(department);
+        let updatedSelectedDepartments = [...selectedDepartments];
+
+        if (!isDepartmentSelected) {
+            updatedSelectedDepartments.push(department);
+            updatedSelectedDepartments.push(...subDepartments);
+        } else {
+            updatedSelectedDepartments = updatedSelectedDepartments.filter((dept) => ![department, ...subDepartments].includes(dept));
+        }
+
+        setSelectedDepartments(updatedSelectedDepartments);
+    };
+
+    const handleSubDepartmentSelect = (subDepartment: string, department: string, subDepartments: string[]) => {
+        const isSubDepartmentSelected = selectedDepartments.includes(subDepartment);
+        let updatedSelectedDepartments = [...selectedDepartments];
+
+        if (!isSubDepartmentSelected) {
+            updatedSelectedDepartments.push(subDepartment);
+
+            const isAllSubDepartmentsSelected = subDepartments.every((subDept) => updatedSelectedDepartments.includes(subDept));
+            const isDepartmentSelected = updatedSelectedDepartments.includes(department);
+            if (isAllSubDepartmentsSelected && !isDepartmentSelected) {
+                updatedSelectedDepartments.push(department);
+            }
+        } else {
+            updatedSelectedDepartments = updatedSelectedDepartments.filter(
+                (dept) => ![subDepartment, department].includes(dept)
+            );
+        }
+
+        setSelectedDepartments(updatedSelectedDepartments);
+    };
+
+    const renderDepartment = (department: Department): React.ReactNode => {
+        const isDepartmentSelected = selectedDepartments.includes(department.department);
+        const selectedSubDepartments = department.sub_departments.filter((subDept) =>
+            selectedDepartments.includes(subDept)
+        );
+
+        return (
+            <TreeItem
+                key={department.department}
+                nodeId={department.department}
+                label={
+                    <div>
+                        <Checkbox
+                            checked={isDepartmentSelected && selectedSubDepartments.length === department.sub_departments.length}
+                            indeterminate={!isDepartmentSelected && selectedSubDepartments.length > 0}
+                            onChange={(event) =>
+                                handleDepartmentSelect(event, department.department, department.sub_departments)
+                            }
+                            onClick={(event) => event.stopPropagation()}
+                        />
+                        {department.department}
+                    </div>
+                }
+                onClick={(event) => event.stopPropagation()}
+            >
+                {department.sub_departments.map((subDept) => (
+                    <TreeItem
+                        key={subDept}
+                        nodeId={subDept}
+                        label={
+                            <div>
+                                <Checkbox
+                                    checked={selectedDepartments.includes(subDept)}
+                                    onChange={() => handleSubDepartmentSelect(subDept, department.department, department.sub_departments)}
+                                    onClick={(event) => event.stopPropagation()}
+                                />
+                                {subDept}
+                            </div>
+                        }
+                    />
+                ))}</TreeItem>
+
+        );
     };
 
     return (
-        <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                    Nested List Items
-                </ListSubheader>
-            }
-        >
-
-            <ListItemButton onClick={handleClick}>
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Inbox" />
-                {open ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={open[0]} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                            <StarBorder />
-                        </ListItemIcon>
-                        <ListItemText primary="Starred" />
-                    </ListItemButton>
-                </List>
-            </Collapse>
-            <ListItemButton onClick={handleClick}>
-                <Checkbox
-                    edge="start"
-                    checked={true}
-                    tabIndex={-1}
-                    disableRipple
-
-                />
-                <ListItemText primary="Inbox" />
-                {open[0] ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={open[1]} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                            <StarBorder />
-                        </ListItemIcon>
-                        <ListItemText primary="Starred" />
-                    </ListItemButton>
-                </List>
-            </Collapse>
-        </List>
+        <TreeView defaultCollapseIcon={<ExpandLess />} defaultExpandIcon={<ExpandMore />}>
+            {departmentData.map((department) => renderDepartment(department))}
+        </TreeView>
     );
-}
+};
+
+export default DepartmentList;
