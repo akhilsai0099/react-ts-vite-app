@@ -121,7 +121,11 @@ const Form: React.FC = () => {
                 <Snackbar
                     open={openSnackbar}
                     autoHideDuration={3000}
-                    onClose={handleCloseSnackbar}>
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}>
                     <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
                         Please Fill all the fields to proceed to the next page
                     </Alert>
