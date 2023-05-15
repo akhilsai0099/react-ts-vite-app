@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { fetchPosts } from '../helper/fetchPosts';
-import DepartmentList from './DepartmentList'
-import { Post } from '../helper/fetchPosts';
+import Post from '../helper/Post';
 
 function Posts() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -25,40 +24,26 @@ function Posts() {
     ];
 
     return (
-        <div
-            style={{
-                height: 400,
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-            }}
-        >
-            <div>
-                <div style={{ height: 373, width: '100%', maxWidth: '800px' }}>
-                    <DataGrid
-                        rows={posts}
-                        columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: {
-                                    pageSize: 5,
-                                },
-                            },
-                        }}
-                        sx={{
-                            boxShadow: 2,
-                            border: 2,
-                            '& .MuiDataGrid-cell:hover': {
-                                color: 'primary.main',
-                            },
-                        }} />
-                </div>
-                <div>
-
-                    <DepartmentList />
-                </div>
-            </div>
+        <div style={{ height: 373, width: '100%', maxWidth: '800px' }}>
+            <DataGrid
+                rows={posts}
+                columns={columns}
+                initialState={{
+                    pagination: {
+                        paginationModel: {
+                            pageSize: 5,
+                        },
+                    },
+                }}
+                sx={{
+                    boxShadow: 2,
+                    border: 2,
+                    '& .MuiDataGrid-cell:hover': {
+                        color: 'primary.main',
+                    },
+                }} />
         </div>
+
     );
 
 }

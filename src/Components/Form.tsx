@@ -1,21 +1,27 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, FormEvent } from 'react';
 import './Form.css'
 
-interface FormData {
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+export interface FormData {
     name: string;
     email: string;
     mobile: string;
 }
 
-function Alert(props: AlertProps) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Form: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
@@ -42,9 +48,7 @@ const Form: React.FC = () => {
         if (!formData.name || !formData.email || !formData.mobile) {
             setOpenSnackbar(true);
         } else {
-            console.log(formData); // For debugging purposes
 
-            // Store form data in localStorage
             localStorage.setItem('formData', JSON.stringify(formData));
 
             // Reset form data
@@ -57,6 +61,7 @@ const Form: React.FC = () => {
             // Redirect to the next page
             navigate('/posts');
         }
+
     };
 
     const handleCloseSnackbar = () => {
@@ -98,9 +103,13 @@ const Form: React.FC = () => {
                         Submit
                     </Button>
                 </Box>
-                <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={handleCloseSnackbar}>
-                    <Alert onClose={handleCloseSnackbar} severity="error">
-                        All the fields should be filled to proceed to the next page
+
+                <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={3000}
+                    onClose={handleCloseSnackbar}>
+                    <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                        Please Fill all the fields to proceed to the next page
                     </Alert>
                 </Snackbar>
             </form>

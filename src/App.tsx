@@ -1,6 +1,5 @@
-import Form from './Components/Form'
-import Posts from './Components/Posts'
-import React from 'react';
+import Page1 from './Pages/Page1'
+import Page2 from './Pages/Page2'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
@@ -11,8 +10,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Form />} />
-        <Route path='/posts' element={<Posts />} />
+        <Route path="/" element={<Page1 />} />
+        <Route path='/posts' element={<Page2 />} />
       </Routes>
     </Router>
   )

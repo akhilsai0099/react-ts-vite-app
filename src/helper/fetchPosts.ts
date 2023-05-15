@@ -1,12 +1,6 @@
 import axios from 'axios';
+import { Post } from './Post'
 
-
-export interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
 
 
 // Define the API URL
